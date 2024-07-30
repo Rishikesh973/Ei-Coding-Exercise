@@ -1,0 +1,56 @@
+
+// Product Interface
+interface Document {
+    void open();
+}
+
+// Concrete Products
+class PDFDocument implements Document {
+    @Override
+    public void open() {
+        System.out.println("Opening PDF document.");
+    }
+}
+
+class WordDocument implements Document {
+    @Override
+    public void open() {
+        System.out.println("Opening Word document.");
+    }
+}
+
+// Creator
+abstract class DocumentCreator {
+    public abstract Document createDocument();
+
+    public void openDocument() {
+        Document doc = createDocument();
+        doc.open();
+    }
+}
+
+// Concrete Creators
+class PDFDocumentCreator extends DocumentCreator {
+    @Override
+    public Document createDocument() {
+        return new PDFDocument();
+    }
+}
+
+class WordDocumentCreator extends DocumentCreator {
+    @Override
+    public Document createDocument() {
+        return new WordDocument();
+    }
+}
+
+// Usage
+public class FactoryMethodDemo {
+    public static void main(String[] args) {
+        DocumentCreator creator = new PDFDocumentCreator();
+        creator.openDocument();
+
+        creator = new WordDocumentCreator();
+        creator.openDocument();
+    }
+}
