@@ -1,0 +1,60 @@
+
+// Subject Interface
+interface WeatherStation {
+    void addObserver(Display display);
+    void removeObserver(Display display);
+    void notifyObservers();
+}
+
+// Concrete Subject
+class WeatherData implements WeatherStation {
+    private List<Display> displays = new ArrayList<>();
+    private int temperature;
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+        notifyObservers();
+    }
+
+    @Override
+    public void addObserver(Display display) {
+        displays.add(display);
+    }
+
+    @Override
+    public void removeObserver(Display display) {
+        displays.remove(display);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Display display : displays) {
+            display.update(temperature);
+        }
+    }
+}
+
+// Observer Interface
+interface Display {
+    void update(int temperature);
+}
+
+// Concrete Observer
+class CurrentConditionsDisplay implements Display {
+    @Override
+    public void update(int temperature) {
+        System.out.println("Current temperature: " + temperature);
+    }
+}
+
+// Usage
+public class ObserverDemo {
+    public static void main(String[] args) {
+        WeatherData weatherData = new WeatherData();
+        CurrentConditionsDisplay display = new CurrentConditionsDisplay();
+        weatherData.addObserver(display);
+
+        weatherData.setTemperature(25);
+        weatherData.setTemperature(30);
+    }
+}
