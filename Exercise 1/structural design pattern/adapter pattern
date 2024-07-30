@@ -1,0 +1,87 @@
+
+// Target Interface
+interface MediaPlayer {
+    void play(String audioType, String fileName);
+}
+
+// Adaptee Interface
+interface AdvancedMediaPlayer {
+    void playMP4(String fileName);
+    void playVLC(String fileName);
+}
+
+// Adaptee Implementations
+class MP4Player implements AdvancedMediaPlayer {
+    @Override
+    public void playMP4(String fileName) {
+        System.out.println("Playing MP4 file. Name: " + fileName);
+    }
+
+    @Override
+    public void playVLC(String fileName) {
+        // Do nothing
+    }
+}
+
+class VLCPlayer implements AdvancedMediaPlayer {
+    @Override
+    public void playMP4(String fileName) {
+        // Do nothing
+    }
+
+    @Override
+    public void playVLC(String fileName) {
+        System.out.println("Playing VLC file. Name: " + fileName);
+    }
+}
+
+// Adapter
+class MediaAdapter implements MediaPlayer {
+    AdvancedMediaPlayer advancedMediaPlayer;
+
+    public MediaAdapter(String audioType) {
+        if (audioType.equalsIgnoreCase("mp4")) {
+            advancedMediaPlayer = new MP4Player();
+        } else if (audioType.equalsIgnoreCase("vlc")) {
+            advancedMediaPlayer = new VLCPlayer();
+        }
+    }
+
+    @Override
+    public void play(String audioType, String fileName) {
+        if (audioType.equalsIgnoreCase("mp4")) {
+            advancedMediaPlayer.playMP4(fileName);
+        } else if (audioType.equalsIgnoreCase("vlc")) {
+            advancedMediaPlayer.playVLC(fileName);
+        }
+    }
+}
+
+// Concrete Target
+class AudioPlayer implements MediaPlayer {
+    MediaAdapter mediaAdapter;
+
+    @Override
+    public void play(String audioType, String fileName) {
+        if (audioType.equalsIgnoreCase("mp3")) {
+            System.out.println("Playing MP3 file. Name: " + fileName);
+        } else if (audioType.equalsIgnoreCase("mp4") || audioType.equalsIgnoreCase("vlc")) {
+            mediaAdapter = new MediaAdapter(audioType);
+            mediaAdapter.play(audioType, fileName);
+        } else {
+            System.out.println("Invalid media. " + audioType + " format not supported.");
+        }
+    }
+}
+
+// Usage
+public class AdapterDemo {
+    public static void main(String[] args) {
+        AudioPlayer audioPlayer = new AudioPlayer();
+
+        audioPlayer.play("mp3", "beyond_the_horizon.mp3");
+        audioPlayer.play("mp4", "alone.mp4");
+        audioPlayer.play("vlc", "far_far_away.vlc");
+        audioPlayer.play("avi", "mind_me.avi");
+    }
+}
